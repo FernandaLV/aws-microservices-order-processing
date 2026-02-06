@@ -116,15 +116,15 @@ jobs:
         working-directory: infra
         run: terraform apply -auto-approve
 
-      - name: Get Outputs
-        id: terraform_outputs
-        run: |
-          cd terraform
-          echo "api_endpoint=$(terraform output -raw api_gateway_endpoint)" >> $GITHUB_OUTPUT
-          echo "dynamodb_table=$(terraform output -raw dynamodb_table_name)" >> $GITHUB_OUTPUT
+      # - name: Get Outputs
+      #   id: terraform_outputs
+      #   run: |
+      #     cd terraform
+      #     echo "api_endpoint=$(terraform output -raw api_gateway_endpoint)" >> $GITHUB_OUTPUT
+      #     echo "dynamodb_table=$(terraform output -raw dynamodb_table_name)" >> $GITHUB_OUTPUT
 
-      - name: Print Deployment Info
-        run: |
-          echo "✅ Infrastructure deployed successfully!"
-          echo "API Endpoint: ${{ steps.terraform_outputs.outputs.api_endpoint }}"
-          echo "DynamoDB Table: ${{ steps.terraform_outputs.outputs.dynamodb_table }}"
+      # - name: Print Deployment Info
+      #   run: |
+      #     echo "✅ Infrastructure deployed successfully!"
+      #     echo "API Endpoint: ${{ steps.terraform_outputs.outputs.api_endpoint }}"
+      #     echo "DynamoDB Table: ${{ steps.terraform_outputs.outputs.dynamodb_table }}"
