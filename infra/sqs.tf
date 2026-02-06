@@ -28,3 +28,15 @@ resource "aws_sqs_queue_policy" "order_queue_policy" {
     ]
   })
 }
+
+resource "aws_sns_topic" "order_notifications" {
+  name = "${var.project_name}-notifications"
+  tags = var.tags
+}
+
+resource "aws_sns_topic_subscription" "order_queue" {
+  topic_arn            = aws_sns_topic.order_notifications.arn
+  protocol             = "sqs"
+  endpoint             = aws_sqs_queue.order_queue.arn
+  raw_message_delivery = true
+}
