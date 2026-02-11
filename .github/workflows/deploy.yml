@@ -108,13 +108,13 @@ jobs:
         working-directory: infra
         run: terraform init
 
-      - name: Download Plan
+      - name: Terraform Plan
         working-directory: infra
-        run: terraform plan
+        run: terraform plan - out=tfplan
 
       - name: Terraform Apply
         working-directory: infra
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan
 
       # - name: Get Outputs
       #   id: terraform_outputs
