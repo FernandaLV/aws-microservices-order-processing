@@ -61,7 +61,7 @@ resource "aws_iam_role_policy_attachment" "lambda_attach" {
 resource "aws_lambda_function" "process_queue" {
   filename            = data.archive_file.process_queue_zip.output_path
   function_name       = "${var.project_name}-process-queue"
-  role                = aws_iam_role.lambda_role.arn
+  role                = aws_iam_role.lambda_sqs_role.arn
   handler             = "handler.lambda_handler"
   source_code_hash    = data.archive_file.process_queue_zip.output_base64sha256
   runtime             = "python3.11"
