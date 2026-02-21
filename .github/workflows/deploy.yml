@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
@@ -13,6 +14,79 @@ env:
   TF_VERSION: 1.6.0
 
 jobs:
+  validate:
+    name: Validate Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Config AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive infra/
+        continue-on-error: false # Falha se a formatação estiver incorreta
+
+      - name: Terraform Init
+        working-directory: infra
+        run:   terraform init -backend=false # Evita o backend para validação local
+      
+      - name: Terraform Validate
+        working-directory: infra
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: infra
+        run: terraform plan -out=tfplan
+
+      - name: Save Plan
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: infra/tfplan
+          retention-days: 1
+
+  lint:
+    name: Lint Python Code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint flake8 black
+
+      - name: Run Black check # Verifica se o código está formatado corretamente
+        run: black --check lambdas/
+        continue-on-error: true
+
+      - name: Run Flake8 # Verifica problemas de estilo e qualidade do código. Define o limite de comprimento da linha para 100 caracteres
+        run: flake8 lambdas/ --max-line-length=100
+        continue-on-error: true
+
+      - name: Run Pylint # Verifica problemas de qualidade do código e possíveis erros.
+        run: pylint lambdas/
+        continue-on-error: false # Falha se o código tiver problemas de qualidade
+
+
   deploy:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
