@@ -83,7 +83,7 @@ jobs:
         continue-on-error: true
 
       - name: Run Pylint # Verifica problemas de qualidade do código e possíveis erros.
-        run: pylint lambdas/
+        run: pylint lambdas/ --fail-under=7.5 # Define uma pontuação mínima para falhar a execução. Ajuste conforme necessário.
         continue-on-error: false # Falha se o código tiver problemas de qualidade
 
 

@@ -1,10 +1,11 @@
+"""
+Lambda acionada pelo SQS.
+O SQS envia um batch de registros no campo 'Records'.
+"""
+
 import json
 
-def lambda_handler(event, context):
-    """
-    Lambda acionada pelo SQS.
-    O SQS envia um batch de registros no campo 'Records'.
-    """
+def lambda_handler(event, context): # pylint: disable=unused-argument
 
     print("Evento recebido:")
     print(json.dumps(event, indent=2))
