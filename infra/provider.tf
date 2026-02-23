@@ -12,8 +12,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "OrderProcessing"
-      ManagedBy   = "Terraform"
+      Project   = "OrderProcessing"
+      ManagedBy = "Terraform"
     }
   }
 }

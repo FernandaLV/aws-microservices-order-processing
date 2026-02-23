@@ -59,14 +59,14 @@ resource "aws_iam_role_policy_attachment" "lambda_attach" {
 
 # Lambda: Process Queue
 resource "aws_lambda_function" "process_queue" {
-  filename            = data.archive_file.process_queue_zip.output_path
-  function_name       = "${var.project_name}-process-queue"
-  role                = aws_iam_role.lambda_sqs_role.arn
-  handler             = "handler.lambda_handler"
-  source_code_hash    = data.archive_file.process_queue_zip.output_base64sha256
-  runtime             = "python3.11"
-  timeout             = var.lambda_timeout
-  memory_size         = var.lambda_memory_size
+  filename         = data.archive_file.process_queue_zip.output_path
+  function_name    = "${var.project_name}-process-queue"
+  role             = aws_iam_role.lambda_sqs_role.arn
+  handler          = "handler.lambda_handler"
+  source_code_hash = data.archive_file.process_queue_zip.output_base64sha256
+  runtime          = "python3.11"
+  timeout          = var.lambda_timeout
+  memory_size      = var.lambda_memory_size
 
   tags = var.tags
 }
