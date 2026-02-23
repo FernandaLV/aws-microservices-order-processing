@@ -1,0 +1,3 @@
+# Esta lambda utiliza apenas a biblioteca json, que é parte da biblioteca padrão do Python, 
+# então não há dependências externas a serem listadas aqui. 
+# Se no futuro forem adicionadas bibliotecas externas, elas devem ser listadas neste arquivo.
