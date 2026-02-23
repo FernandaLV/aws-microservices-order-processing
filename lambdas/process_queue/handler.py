@@ -7,6 +7,10 @@ import json
 
 def lambda_handler(event, context): # pylint: disable=unused-argument
 
+    """
+    Recebe evento SQS e processa cada registro.
+    """
+
     print("Evento recebido:")
     print(json.dumps(event, indent=2))
 
