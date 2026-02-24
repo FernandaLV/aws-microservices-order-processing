@@ -37,13 +37,13 @@ variable "dynamodb_write_capacity" {
 variable "lambda_timeout" {
   description = "Lambda function timeout in seconds"
   type        = number
-  default     = 60
+  default     = 10
 }
 
 variable "lambda_memory_size" {
   description = "Lambda function memory size in MB"
   type        = number
-  default     = 256
+  default     = 128
 }
 
 variable "tags" {
