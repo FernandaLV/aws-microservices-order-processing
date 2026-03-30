@@ -82,11 +82,16 @@ resource "aws_api_gateway_integration_response" "integration_response" {
   resource_id = aws_api_gateway_resource.orders.id
   http_method = aws_api_gateway_method.post_orders.http_method
   status_code = aws_api_gateway_method_response.response_200.status_code
+
+  depends_on = [
+    aws_api_gateway_integration.sqs_integration
+  ]
 }
 # Deployment da API Gateway
 resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [
-    aws_api_gateway_integration.sqs_integration
+    aws_api_gateway_integration.sqs_integration,
+    aws_api_gateway_integration_response.integration_response
   ]
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
