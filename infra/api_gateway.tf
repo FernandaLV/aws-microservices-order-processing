@@ -42,7 +42,7 @@ resource "aws_iam_role_policy" "api_gateway_sqs_policy" {
       Action = [
         "sqs:SendMessage"
       ]
-      Resource = aws_sqs_queue.orders_queue.arn
+      Resource = aws_sqs_queue.order_queue.arn
     }]
   })
 }
@@ -54,7 +54,7 @@ resource "aws_api_gateway_integration" "sqs_integration" {
 
   integration_http_method = "POST"
   type                    = "AWS"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:sqs:path/${data.aws_caller_identity.current.account_id}/${aws_sqs_queue.orders_queue.name}"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:sqs:path/${data.aws_caller_identity.current.account_id}/${aws_sqs_queue.order_queue.name}"
 
   credentials = aws_iam_role.api_gateway_sqs_role.arn
 
