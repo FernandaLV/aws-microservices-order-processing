@@ -1,3 +1,4 @@
+# SQS para fila de pedidos
 resource "aws_sqs_queue" "order_queue" {
   name                       = "${var.project_name}-queue"
   message_retention_seconds  = var.sqs_message_retention_period
