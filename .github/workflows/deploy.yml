@@ -34,7 +34,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Terraform Format Check
-        run: terraform fmt -check -recursive infra/
+        run: terraform fmt -check infra/
         continue-on-error: false # Falha se a formatação estiver incorreta
 
       - name: Terraform Init
@@ -113,7 +113,7 @@ jobs:
 
       - name: Terraform Plan
         working-directory: infra
-        run: terraform plan - out=tfplan
+        run: terraform plan -out=tfplan
 
       - name: Terraform Apply
         working-directory: infra
