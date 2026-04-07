@@ -95,4 +95,18 @@ resource "aws_api_gateway_deployment" "deployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.orders.id,
+      aws_api_gateway_method.post_orders.id,
+      aws_api_gateway_integration.sqs_integration.id
+    ]))
+  }
+}
+# Stage para a API Gateway
+resource "aws_api_gateway_stage" "dev" {
+  rest_api_id   = aws_api_gateway_rest_api.orders_api.id
+  deployment_id = aws_api_gateway_deployment.deployment.id
+  stage_name    = "dev"
 }
