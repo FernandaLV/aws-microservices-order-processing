@@ -68,7 +68,7 @@ resource "aws_api_gateway_integration" "sqs_integration" {
 Action=SendMessage&MessageBody=$input.body
 EOF
   }
-  
+
   # Configuração para lidar com respostas do SQS
   passthrough_behavior = "WHEN_NO_MATCH"
 }
