@@ -58,12 +58,18 @@ resource "aws_api_gateway_integration" "sqs_integration" {
 
   credentials = aws_iam_role.api_gateway_sqs_role.arn
 
+  # Parâmetros de requisição para garantir que o Content-Type seja application/x-www-form-urlencoded
+  request_parameters = {
+    "integration.request.header.Content-Type" = "'application/x-www-form-urlencoded'"
+  }
+  # Template para transformar o corpo da requisição JSON em formato de query string para o SQS
   request_templates = {
     "application/json" = <<EOF
 Action=SendMessage&MessageBody=$input.body
 EOF
   }
-
+  
+  # Configuração para lidar com respostas do SQS
   passthrough_behavior = "WHEN_NO_MATCH"
 }
 # Deploy da API Gateway

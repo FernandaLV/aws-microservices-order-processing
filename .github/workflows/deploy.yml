@@ -102,3 +102,23 @@ jobs:
       - name: Terraform Apply
         working-directory: infra
         run: terraform apply -auto-approve tfplan
+
+  create-pr:
+    name: Create PR to Main
+    runs-on: ubuntu-latest
+    needs: [validate, lint]
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: develop
+          base: main
+          title: 'Merge develop into main'
+          body: 'Automated PR from develop to main after successful CI checks.'
+          delete-branch: false
