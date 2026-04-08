@@ -106,6 +106,9 @@ jobs:
   create-pr:
     name: Create PR to Main
     runs-on: ubuntu-latest
+    permissions:
+      contents: write       # Necessário para criar commits/branches
+      pull-requests: write  # Necessário para criar o PR
     needs: [validate, lint]
     if: github.ref == 'refs/heads/develop'
 
