@@ -104,6 +104,7 @@ jobs:
         run: terraform apply -auto-approve tfplan
 
   create-pr:
+    name: Create Pull Request to Main
     runs-on: ubuntu-latest
     permissions:
       contents: write       # Necessário para criar commits/branches

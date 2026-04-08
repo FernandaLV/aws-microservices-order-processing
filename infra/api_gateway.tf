@@ -8,13 +8,58 @@ resource "aws_api_gateway_resource" "orders" {
   parent_id   = aws_api_gateway_rest_api.orders_api.root_resource_id
   path_part   = "orders"
 }
+
+
+# Modelo para validação do corpo da requisição
+resource "aws_api_gateway_model" "order_model" {
+  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+  name         = "OrderModel"
+  content_type = "application/json"
+
+  schema = jsonencode({
+    type = "object"
+    required = ["orderId", "product", "price"]
+
+    properties = {
+      orderId = {
+        type = "string"
+      }
+      product = {
+        type = "string"
+      }
+      price = {
+        type = "number"
+      }
+    }
+  })
+}
+
+# Validator para validar o corpo da requisição usando o modelo definido
+resource "aws_api_gateway_request_validator" "validator" {
+  name                        = "validate-body"
+  rest_api_id                 = aws_api_gateway_rest_api.orders_api.id
+  validate_request_body       = true
+  validate_request_parameters = false
+}
+
+
 # Método POST para criar um novo pedido
 resource "aws_api_gateway_method" "post_orders" {
   rest_api_id   = aws_api_gateway_rest_api.orders_api.id
   resource_id   = aws_api_gateway_resource.orders.id
   http_method   = "POST"
   authorization = "NONE"
+  
+  # Configuração para usar o modelo de validação
+  request_models = {
+    "application/json" = aws_api_gateway_model.order_model.name
+  }
+
+  # Configuração para usar o request validator
+  request_validator_id = aws_api_gateway_request_validator.validator.id
 }
+
+
 # Role IAM - Integração do método POST com o Lambda de criação de pedidos
 resource "aws_iam_role" "api_gateway_sqs_role" {
   name = "${var.project_name}-api-gateway-sqs-role"
@@ -110,6 +155,7 @@ resource "aws_api_gateway_deployment" "deployment" {
       aws_api_gateway_integration.sqs_integration.id
     ]))
   }
+  
 }
 # Stage para a API Gateway
 resource "aws_api_gateway_stage" "dev" {
