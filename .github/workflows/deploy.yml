@@ -113,15 +113,30 @@ jobs:
     if: github.ref == 'refs/heads/develop'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          branch: develop
-          base: main
-          title: 'Merge develop into main'
-          body: 'Automated PR from develop to main after successful CI checks.'
-          delete-branch: false
+      - name: Create Pull Request with GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Garante que o histórico local está atualizado
+          git fetch origin main develop
+          
+          # Tenta criar o PR diretamente no servidor do GitHub
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "Automated PR: Develop to Main" \
+            --body "Este PR foi criado automaticamente após validação da branch develop." || echo "PR já existe ou as branches são iguais."
+
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+
+      # - name: Create Pull Request
+      #   uses: peter-evans/create-pull-request@v5
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: develop
+      #     base: main
+      #     title: 'Merge develop into main'
+      #     body: 'Automated PR from develop to main after successful CI checks.'
+      #     delete-branch: false
