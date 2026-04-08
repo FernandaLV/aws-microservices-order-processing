@@ -102,3 +102,28 @@ jobs:
       - name: Terraform Apply
         working-directory: infra
         run: terraform apply -auto-approve tfplan
+
+  create-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # Necessário para criar commits/branches
+      pull-requests: write  # Necessário para criar o PR
+    needs: [validate, lint]
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      # ESSA LINHA É OBRIGATÓRIA EM TODOS OS JOBS QUE USAM GIT
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Baixa todo o histórico para comparar branches
+
+      - name: Create Pull Request with GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Agora o diretório .git existe e o comando vai funcionar
+          gh pr create \
+            --base main \
+            --head develop \
+            --title "Automated PR: Develop to Main" \
+            --body "PR automático após passar no job de Validação." || echo "PR já existe ou as branches são iguais."
