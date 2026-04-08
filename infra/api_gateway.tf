@@ -102,6 +102,7 @@ resource "aws_api_gateway_deployment" "deployment" {
 
   rest_api_id = aws_api_gateway_rest_api.orders_api.id
 
+  # Força o redeploy sempre que houver mudanças nos recursos, métodos ou integrações
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_resource.orders.id,
