@@ -12,12 +12,12 @@ resource "aws_api_gateway_resource" "orders" {
 
 # Modelo para validação do corpo da requisição
 resource "aws_api_gateway_model" "order_model" {
-  rest_api_id = aws_api_gateway_rest_api.orders_api.id
+  rest_api_id  = aws_api_gateway_rest_api.orders_api.id
   name         = "OrderModel"
   content_type = "application/json"
 
   schema = jsonencode({
-    type = "object"
+    type     = "object"
     required = ["orderId", "product", "price"]
 
     properties = {
@@ -49,7 +49,7 @@ resource "aws_api_gateway_method" "post_orders" {
   resource_id   = aws_api_gateway_resource.orders.id
   http_method   = "POST"
   authorization = "NONE"
-  
+
   # Configuração para usar o modelo de validação
   request_models = {
     "application/json" = aws_api_gateway_model.order_model.name
@@ -155,7 +155,7 @@ resource "aws_api_gateway_deployment" "deployment" {
       aws_api_gateway_integration.sqs_integration.id
     ]))
   }
-  
+
 }
 # Stage para a API Gateway
 resource "aws_api_gateway_stage" "dev" {
